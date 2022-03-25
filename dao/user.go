@@ -1,41 +1,37 @@
 package dao
 
 import (
-	"fmt"
+	"errors"
 	"goProject/models"
 )
 
-type UserRegister struct {
-	UserName   string `json:"username,string" binding:"required"`
-	PassWord   string `json:"password,string" binding:"required"`
-	ConfirmPsw string `json:"config_password" binding:"required,eqfield=Password"`
-	Email      string `json:"email,string"`
-	Gender     bool   `json:"gender"`
+func InsertUser(user *models.User) error {
+	if err := dbConn.Create(user).Error; err != nil {
+		return ErrorInsertFailed
+	}
+	return nil
 }
 
-func Register(user *UserRegister) (err error) {
-	if err = ifIsExisted(user); err != nil {
+func IfIsExisted(username string) (err error) {
+	var nums int64 = 0
+	err = dbConn.Model(&models.User{}).Select("id").Where("username=?", username).Count(&nums).Error
+	if err != nil {
+		err = ErrorInsertFailed
 		return
 	}
-	newUser := models.User{
-		UserName: user.UserName,
-		PassWord: user.PassWord,
-		Email:    user.Email,
-		Gender:   user.Gender,
-	}
-
-	return insertUser(&newUser)
-}
-
-func insertUser(user *models.User) (err error) {
-	return dbConn.Create(user).Error
-}
-
-func ifIsExisted(user *UserRegister) (err error) {
-	var nums int64 = 0
-	dbConn.Model(&models.User{}).Select("id").Where("username=", user.UserName).Count(&nums)
 	if nums != 0 {
-		err = fmt.Errorf("userName has been existed")
+		err = ErrorUserExisted
+	}
+	return
+}
+
+func IfCertified(user *models.UserLoginForm) (err error) {
+	var md5PassWord string
+	if err := dbConn.Model(user).Select("password").Where("username=?", user.UserName).Find(&md5PassWord).Error; err != nil {
+		return
+	}
+	if md5PassWord != user.PassWord {
+		return errors.New("password not match")
 	}
 	return
 }
