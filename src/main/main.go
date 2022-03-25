@@ -1,7 +1,9 @@
 package main
 
-import "goProject/dao"
+import "goProject/router"
 
 func main() {
-	dao.ConnAndInsertAndSelect()
+	//dao.ConnAndInsertAndSelect()
+	r := router.SetUpRouter()
+	r.Run(":8080")
 }

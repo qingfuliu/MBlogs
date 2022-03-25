@@ -2,6 +2,7 @@ package dao
 
 import (
 	"fmt"
+	"goProject/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
@@ -27,7 +28,7 @@ func ConnAndInsertAndSelect() {
 	password := "Wangfei222@"
 	host := "192.168.1.103"
 	port := 3306
-	dbName := "bolgs"
+	dbName := "blogs"
 	// Mysql dsn格式： {username}:{password}@tcp({host}:{port})/
 	//{Dbname}?charset=utf8&parseTime=True&loc=Local
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", username, password, host, port, dbName)
@@ -46,6 +47,11 @@ func ConnAndInsertAndSelect() {
 		return
 	} else {
 		fmt.Println("success")
+	}
+	var nums int64
+	dbConn.Model(&models.User{}).Select("id").Where("username=", "lqf").Count(&nums)
+	if nums != 0 {
+		nums = 1
 	}
 
 }
