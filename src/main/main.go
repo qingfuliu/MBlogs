@@ -1,6 +1,8 @@
 package main
 
-import "goProject/router"
+import (
+	"goProject/router"
+)
 
 func main() {
 	//dao.ConnAndInsertAndSelect()

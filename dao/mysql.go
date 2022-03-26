@@ -9,11 +9,11 @@ import (
 var dbConn *gorm.DB
 
 func init() {
-	userName := "lqf"
-	passWord := "Wangfei222@"
-	ip := "192.168.1.103"
+	userName := "liuqingfu"
+	passWord := "123456"
+	ip := "101.43.252.121"
 	port := 3306
-	dbName := "blogs"
+	dbName := "qfdatabase"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", userName, passWord, ip, port, dbName)
 	var err error
 	dbConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
