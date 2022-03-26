@@ -27,11 +27,11 @@ func IfIsExisted(username string) (err error) {
 
 func IfCertified(user *models.UserLoginForm) (err error) {
 	var md5PassWord string
-	if err := dbConn.Model(user).Select("password").Where("username=?", user.UserName).Find(&md5PassWord).Error; err != nil {
+	if err = dbConn.Model(user).Select("password").Where("username=?", user.UserName).Find(&md5PassWord).Error; err != nil {
 		return
 	}
 	if md5PassWord != user.PassWord {
-		return errors.New("password not match")
+		err = errors.New("password not match")
 	}
 	return
 }

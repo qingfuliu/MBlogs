@@ -18,9 +18,10 @@ func SetUpRouter() *gin.Engine {
 	r.GET("/", func(context *gin.Context) {
 		context.HTML(http.StatusOK, "index.html", nil)
 	})
-
 	version := r.Group("/api/v1")
 	version.POST("/signup", controller.SingUpHandle)
 	//r.GET("//")
+	version.POST("/login", controller.LoginHandle)
+
 	return r
 }
