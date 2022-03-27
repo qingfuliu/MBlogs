@@ -29,6 +29,11 @@ func RegisteValidator(local string) error {
 		}
 		return name
 	})
+	//注册 required
+	//err := register.RegisterValidation("required1", requiredValidation)
+	//if err != nil {
+	//	return err
+	//}
 	zhT := zh.New()
 	enT := en.New()
 	uni := ut.New(zhT, enT, enT)
@@ -53,4 +58,18 @@ func removeStructHeader(m map[string]string) map[string]string {
 		newMap[key] = value
 	}
 	return newMap
+}
+func requiredValidation(f validator.FieldLevel) bool {
+	rs := f.Field()
+	if !rs.IsValid() {
+		return false
+	}
+	return true
+}
+func orderValidation(f validator.StructLevel) bool {
+	order := f.Current().FieldByName("Order")
+	if order.String() == "community_name" || order.String() == "create_date" || order.String() == "" {
+		return true
+	}
+	return false
 }

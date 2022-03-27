@@ -6,13 +6,14 @@ import (
 	"goProject/models"
 )
 
-func Register(user *models.UserRegister) (err error) {
-	if err = dao.IfIsExisted(user.UserName); err != nil {
-		return
+func Register(user *models.UserRegister) error {
+	if existed, err := dao.IfUsersExisted(user.UserName); existed {
+		return err
 	}
 	var md5Paddword string
+	var err error
 	if md5Paddword, err = generate.Md5(user.PassWord); err != nil {
-		return
+		return err
 	}
 	newUser := models.User{
 		ID:       generate.SnowFlakeUID(),
@@ -25,6 +26,10 @@ func Register(user *models.UserRegister) (err error) {
 }
 
 func Login(user *models.UserLoginForm) (err error) {
+	var ok bool
+	if ok, err = dao.IfUsersExisted(user.UserName); !ok {
+		return err
+	}
 	if user.PassWord, err = generate.Md5(user.PassWord); err != nil {
 		return
 	}

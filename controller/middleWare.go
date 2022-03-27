@@ -10,7 +10,7 @@ import (
 func JWTAUTHMiddleWare() func(*gin.Context) {
 	return func(c *gin.Context) {
 		jwtHeader := c.GetHeader("aToken")
-		jwtContent := strings.SplitN(jwtHeader, ",", 2)
+		jwtContent := strings.SplitN(jwtHeader, " ", 2)
 		if len(jwtContent) != 2 || jwtContent[0] != "Bearer" {
 			ResponseErrorWithData(c, CodeInvaildParams, errors.New("token parse failed"))
 			c.Abort()

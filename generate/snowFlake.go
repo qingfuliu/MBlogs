@@ -12,21 +12,20 @@ const (
 	datacenterShift int8  = 17 //机房id偏移量
 	timeStampShift  int8  = 22 ///时间戳偏移量
 	timeStampStart  int64 = 1648212702157
-	timeStampMask   int64 = (1 << 41) - 1
 	sequenceMask    int64 = (1 << 12) - 1
 )
 
 var (
 	timeNowStamp  int64
 	sequence      int64
-	lastTimeStamp = time.Now().UnixMilli() & timeStampMask
+	lastTimeStamp = time.Now().UnixMilli()
 )
 var mutex sync.Mutex
 
 func SnowFlakeUID() int64 {
 	mutex.Lock()
 	defer mutex.Unlock()
-	timeNowStamp = time.Now().UnixMilli() & timeStampMask
+	timeNowStamp = time.Now().UnixMilli()
 	if timeNowStamp == lastTimeStamp {
 		sequence = (sequence + 1) & sequenceMask
 		if sequence == 0 {

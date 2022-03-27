@@ -19,7 +19,7 @@ func getSecret(*jwt.Token) (interface{}, error) {
 }
 
 func getToken(username string) (string, error) {
-	mClaims := &models.MClaims{
+	mClaims := models.MClaims{
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			Subject:   "ifisLogins",
@@ -31,8 +31,20 @@ func getToken(username string) (string, error) {
 	return token.SignedString(Msecret)
 }
 
+//func Valid() (err error) {
+//	if c.VerifyExpiresAt(time.Now().Unix(), true) == false {
+//		return errors.New("token is expired")
+//	}
+//	if !c.VerifyIssuer(AppIss, true) {
+//		return errors.New("token's issuer is wrong")
+//	}
+//	if c.User.Id < 1 {
+//		return errors.New("invalid user in jwt")
+//	}
+//	return
+//}
 func GetAssAndRefToken(username string) (aToken string, rToken string, err error) {
-	mClaims := &models.MClaims{
+	mClaims := models.MClaims{
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(assessTokenLife).Unix(),
@@ -53,17 +65,18 @@ func GetAssAndRefToken(username string) (aToken string, rToken string, err error
 }
 
 func ParseToken(jwtToken string) (*models.MClaims, error) {
-	token, err := jwt.Parse(jwtToken, getSecret)
+	if jwtToken == "" {
+		return nil, errors.New("invalid token")
+	}
+	claims := models.MClaims{}
+	token, err := jwt.ParseWithClaims(jwtToken, &claims, getSecret)
 	if err != nil {
 		return nil, err
 	}
 	if !token.Valid {
-		return nil, err
+		return nil, errors.New("token is expired")
 	}
-	if claims, ok := token.Claims.(*models.MClaims); ok {
-		return claims, nil
-	}
-	return nil, errors.New("invalid token")
+	return &claims, nil
 }
 
 func RefreshToken(aToken, rToken string) (newToken string, err error) {

@@ -18,10 +18,19 @@ func SetUpRouter() *gin.Engine {
 	r.GET("/", func(context *gin.Context) {
 		context.HTML(http.StatusOK, "index.html", nil)
 	})
+	r.POST("/", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "index.html", nil)
+	})
+
 	version := r.Group("/api/v1")
 	version.POST("/signup", controller.SingUpHandle)
 	//r.GET("//")
 	version.POST("/login", controller.LoginHandle)
+	version.POST("/communities", controller.QueryBatchCommunityHandle)
+	version.POST("/refresh", controller.RefreshToken)
 
+	grantGroup := version.Group("/grant")
+	grantGroup.Use(controller.JWTAUTHMiddleWare())
+	grantGroup.POST("/communitySignUp", controller.CreateCommunityHandle)
 	return r
 }

@@ -46,7 +46,7 @@ func LoginHandle(c *gin.Context) {
 		return
 	}
 	if err := logic.Login(userLogin); err != nil {
-		ResponseError(c, CodeCertifiedFailed)
+		ResponseErrorWithData(c, CodeInvaildParams, err)
 		return
 	}
 	aToken, rToken, err := generate.GetAssAndRefToken(userLogin.UserName)
@@ -62,15 +62,15 @@ func LoginHandle(c *gin.Context) {
 }
 
 func RefreshToken(c *gin.Context) {
-	rt := c.Query("rToken")
-	if rt == "" {
+	rtbefore := strings.SplitN(c.GetHeader("rToken"), " ", 2)
+	if len(rtbefore) < 2 {
 		ResponseErrorWithData(c, CodeInvaildParams, gin.H{
 			"data": "found no refresh token",
 		})
 		c.Abort()
 		return
 	}
-	at := c.GetHeader("Authorization")
+	at := c.GetHeader("aToken")
 	if at == "" {
 		ResponseErrorWithData(c, CodeInvaildParams, gin.H{
 			"data": "found no access token",
@@ -86,7 +86,7 @@ func RefreshToken(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	aToken, err := generate.RefreshToken(atSAf[1], rt)
+	aToken, err := generate.RefreshToken(atSAf[1], rtbefore[1])
 	if err != nil {
 		ResponseErrorWithData(c, CodeInvaildParams, err)
 		c.Abort()

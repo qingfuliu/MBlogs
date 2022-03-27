@@ -12,17 +12,8 @@ func InsertUser(user *models.User) error {
 	return nil
 }
 
-func IfIsExisted(username string) (err error) {
-	var nums int64 = 0
-	err = dbConn.Model(&models.User{}).Select("id").Where("username=?", username).Count(&nums).Error
-	if err != nil {
-		err = ErrorInsertFailed
-		return
-	}
-	if nums != 0 {
-		err = ErrorUserExisted
-	}
-	return
+func IfUsersExisted(username string) (bool, error) {
+	return IfIsExisted("username", username, models.User{}.TableName())
 }
 
 func IfCertified(user *models.UserLoginForm) (err error) {

@@ -3,16 +3,16 @@ package controller
 type MStatus int
 
 const (
-	CodeSuccess         MStatus = 1001
-	CodeInvaildParams   MStatus = 1002
-	CodeUserExisted     MStatus = 1003
-	CodeUserNotExisted  MStatus = 1004
-	CodeInvaildPassword MStatus = 1005
-	CodeSeverBase       MStatus = 1006
-	CodeCertifiedFailed MStatus = 1007
+	CodeSuccess MStatus = 1000 + iota
+	CodeInvaildParams
+	CodeUserExisted
+	CodeUserNotExisted
+	CodeInvaildPassword
+	CodeSeverBase
+	CodeCertifiedFailed
 )
 
-var msgStrings = map[MStatus]string{
+var MsgStrings = map[MStatus]string{
 	CodeSuccess:         "success",
 	CodeInvaildParams:   "请求参数错误",
 	CodeUserExisted:     "用户已存在",
@@ -23,7 +23,7 @@ var msgStrings = map[MStatus]string{
 }
 
 func (s MStatus) msg() string {
-	if str, ok := msgStrings[s]; ok {
+	if str, ok := MsgStrings[s]; ok {
 		return str
 	}
 	return ""
