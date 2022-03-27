@@ -10,7 +10,11 @@ func InsertCommunity(community *models.Community) (err error) {
 }
 
 func IfCommunityExisted(communityName string) (bool, error) {
-	return IfIsExisted("community_name", communityName, models.Community{}.TableName())
+	temp := makeStruct(map[string]interface{}{
+		"community_name": communityName,
+		"table_name":     "community",
+	})
+	return IfIsExisted(temp)
 }
 
 func BatchCommunityQuery(b *models.BatchCommunities) (rs []models.Community, err error) {

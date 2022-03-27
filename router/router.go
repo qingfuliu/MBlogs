@@ -32,5 +32,7 @@ func SetUpRouter() *gin.Engine {
 	grantGroup := version.Group("/grant")
 	grantGroup.Use(controller.JWTAUTHMiddleWare())
 	grantGroup.POST("/communitySignUp", controller.CreateCommunityHandle)
+	grantGroup.POST("/PushArticle", controller.PushArticle)
+
 	return r
 }

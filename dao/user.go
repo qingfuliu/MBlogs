@@ -13,7 +13,11 @@ func InsertUser(user *models.User) error {
 }
 
 func IfUsersExisted(username string) (bool, error) {
-	return IfIsExisted("username", username, models.User{}.TableName())
+	temp := makeStruct(map[string]interface{}{
+		"username":   username,
+		"table_name": models.User{}.TableName(),
+	})
+	return IfIsExisted(temp)
 }
 
 func IfCertified(user *models.UserLoginForm) (err error) {

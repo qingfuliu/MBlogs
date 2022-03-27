@@ -1,10 +1,11 @@
 package dao
 
 import (
-	"errors"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"reflect"
+	"strings"
 )
 
 var dbConn *gorm.DB
@@ -27,14 +28,48 @@ func init() {
 	return
 }
 
-func IfIsExisted(colsName string, colsValue string, tableName string) (bool, error) {
+func IfIsExisted(arg interface{}) (bool, error) {
 	var nums int64
-	err := dbConn.Table(tableName).Where(colsName+"=?", colsValue).Count(&nums).Error
+	rfv := arg.(reflect.Value)
+	rft := reflect.TypeOf(rfv.Interface())
+	var db *gorm.DB
+	if _, ok := rft.FieldByName("Ktable_name"); ok {
+		db = dbConn.Table(rfv.FieldByName("Ktable_name").String())
+	} else {
+		return false, ErrorQueryFailed
+	}
+	for index := 0; index < rft.NumField(); index++ {
+		fieldVal := rfv.Field(index).String()
+		fieldTag := rft.Field(index).Name[1:] + "=?"
+		if !strings.Contains(fieldTag, "table_name") {
+			db = db.Where(fieldTag, fieldVal)
+		}
+	}
+	err := db.Count(&nums).Error
 	if err != nil {
-		return false, errors.New("query failed")
+		return false, ErrorQueryFailed
 	}
 	if nums != 0 {
-		return true, errors.New("has been existed")
+		return true, ErrorUserExisted
 	}
-	return false, errors.New("not existed")
+	return false, ErrorUserNotExisted
+}
+
+func makeStruct(m map[string]interface{}) reflect.Value {
+	var structFields []reflect.StructField
+	for key, Val := range m {
+		typeOf := reflect.TypeOf(Val)
+		structElem := reflect.StructField{
+			Name: "K" + key,
+			Type: typeOf,
+		}
+		structFields = append(structFields, structElem)
+	}
+	st := reflect.StructOf(structFields)
+	so := reflect.New(st).Elem()
+	ret := reflect.TypeOf(so.Interface())
+	for index := 0; index < so.NumField(); index++ {
+		so.Field(index).SetString(m[ret.Field(index).Name[1:]].(string))
+	}
+	return so
 }
