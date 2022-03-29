@@ -12,26 +12,34 @@ func InsertUser(user *models.User) error {
 	return nil
 }
 
-func IfIsExisted(username string) (err error) {
-	var nums int64 = 0
-	err = dbConn.Model(&models.User{}).Select("id").Where("username=?", username).Count(&nums).Error
-	if err != nil {
-		err = ErrorInsertFailed
-		return
-	}
-	if nums != 0 {
-		err = ErrorUserExisted
-	}
-	return
+func IfUsersExisted(username string) (bool, error) {
+	temp := makeStruct(map[string]interface{}{
+		"username":   username,
+		"table_name": models.User{}.TableName(),
+	})
+	return IfIsExisted(temp)
 }
 
 func IfCertified(user *models.UserLoginForm) (err error) {
 	var md5PassWord string
-	if err := dbConn.Model(user).Select("password").Where("username=?", user.UserName).Find(&md5PassWord).Error; err != nil {
+	if err = dbConn.Model(user).Select("password").Where("username=?", user.UserName).Find(&md5PassWord).Error; err != nil {
 		return
 	}
 	if md5PassWord != user.PassWord {
-		return errors.New("password not match")
+		err = errors.New("password not match")
 	}
 	return
+}
+
+func ModifyUser(user *models.User) error {
+	err := dbConn.Where("id=?", user.ID).Updates(user).Error
+	return err
+}
+
+func QueryUser(username string) (*models.User, error) {
+	user := &models.User{}
+	if err := dbConn.Where("username=?", username).Find(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }

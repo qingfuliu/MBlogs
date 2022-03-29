@@ -24,7 +24,10 @@ func ResponseErrorWithData(ctx *gin.Context, code MStatus, data interface{}) {
 	res := &ResponseData{
 		Code:    code,
 		Message: code.msg(),
-		Data:    nil,
+		Data:    data,
+	}
+	if _, ok := data.(error); ok {
+		res.Data = data.(error).Error()
 	}
 	ctx.JSON(http.StatusOK, res)
 }
