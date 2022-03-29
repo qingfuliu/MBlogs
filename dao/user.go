@@ -30,3 +30,16 @@ func IfCertified(user *models.UserLoginForm) (err error) {
 	}
 	return
 }
+
+func ModifyUser(user *models.User) error {
+	err := dbConn.Where("id=?", user.ID).Updates(user).Error
+	return err
+}
+
+func QueryUser(username string) (*models.User, error) {
+	user := &models.User{}
+	if err := dbConn.Where("username=?", username).Find(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}

@@ -38,3 +38,17 @@ func Login(user *models.UserLoginForm) (err error) {
 	}
 	return nil
 }
+
+func ModifyUser(user *models.User) error {
+	oldUser, err := dao.QueryUser(user.UserName)
+	if err != nil {
+		return dao.ErrorQueryFailed
+	}
+	if oldUser != nil && oldUser.ID != user.ID {
+		return dao.ErrorUserExisted
+	}
+	if err := dao.ModifyUser(user); err != nil {
+		return dao.ErrorModifyFailed
+	}
+	return nil
+}

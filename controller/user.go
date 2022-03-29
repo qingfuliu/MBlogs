@@ -20,7 +20,7 @@ func SingUpHandle(c *gin.Context) {
 				removeStructHeader(validationError.Translate(translator)))
 			return
 		}
-		ResponseError(c, CodeInvaildParams)
+		ResponseErrorWithData(c, CodeInvaildParams, err)
 		return
 	}
 	if err := logic.Register(newUser); err != nil {

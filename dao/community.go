@@ -32,3 +32,9 @@ func CommunityDetailQuery(communityName string) (community *models.Community, er
 	}
 	return
 }
+
+func CommunityModify(community *models.Community) error {
+	err := dbConn.Where("id=?", community.CommunityId).Select("community_name", "community_introduction").
+		Updates(community).Error
+	return err
+}

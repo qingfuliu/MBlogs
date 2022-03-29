@@ -49,3 +49,24 @@ func QueryBatchCommunityHandle(c *gin.Context) {
 	}
 	return
 }
+
+func ModifyCommunity(c *gin.Context) {
+	community := &models.Community{}
+	if err := c.BindJSON(community); err != nil {
+		errs, ok := err.(validator.ValidationErrors)
+		if ok {
+			ResponseErrorWithData(c, CodeInvaildParams, errs.Translate(translator))
+			return
+		}
+		ResponseErrorWithData(c, CodeInvaildParams, err)
+		return
+	}
+	if err := logic.ModifyCommunity(community); err != nil {
+		ResponseErrorWithData(c, CodeInvaildParams, err)
+		return
+	}
+	ResponseSuccess(c, gin.H{
+		"msg": "修改成功",
+	})
+	return
+}

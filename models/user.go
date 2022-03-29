@@ -4,10 +4,10 @@ import "time"
 
 type User struct {
 	ID        int64     `gorm:"column:id"`
-	UserName  string    `gorm:"column:username"`
+	UserName  string    `gorm:"column:username" binding:"required"`
 	PassWord  string    `gorm:"column:password"`
 	Email     string    `gorm:"column:email"`
-	Gender    bool      `gorm:"-"`
+	Gender    string    `gorm:"column:gender"`
 	CreatedAt time.Time `gorm:"column:createdate"`
 	UpdatedAt time.Time `gorm:"column:updatedate"`
 }
@@ -30,5 +30,5 @@ type UserRegister struct {
 	PassWord        string `json:"password" binding:"required"`
 	ConfirmPassword string `json:"re_password" binding:"required,eqfield=PassWord"`
 	Email           string `json:"email,omitempty"`
-	Gender          bool   `json:"gender,omitempty"`
+	Gender          string `json:"gender,omitempty"`
 }

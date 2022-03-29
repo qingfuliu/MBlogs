@@ -5,7 +5,7 @@ import "time"
 type CommunityDetail struct {
 	CommunityName         string    `gorm:"column:community_name" json:"community_name" binding:"required"`
 	CommunityIntroduction string    `gorm:"column:community_introduction" json:"community_introduction,omitempty"`
-	Creator               string    `gorm:"column:creator" json:"-"`
+	Creator               string    `gorm:"column:creator" json:"creator,omitempty"`
 	CreatedAt             time.Time `gorm:"column:create_date" json:"create_date,omitempty"`
 }
 
@@ -14,7 +14,7 @@ func (c CommunityDetail) TableName() string {
 }
 
 type Community struct {
-	CommunityId      int64 `gorm:"column:id"`
+	CommunityId      int64 `gorm:"column:id" json:"community_id"`
 	*CommunityDetail `gorm:"embedded"`
 }
 
