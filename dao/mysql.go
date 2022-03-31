@@ -2,6 +2,8 @@ package dao
 
 import (
 	"fmt"
+	"go.uber.org/zap"
+	"goProject/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"reflect"
@@ -20,12 +22,11 @@ func init() {
 	var err error
 	dbConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Printf("连接失败，错误: %s", err)
+		logger.Mlogger.Info("db 连接失败，err is ", zap.Error(err))
 		return
 	} else {
-		fmt.Println("连接成功")
+		logger.Mlogger.Info("db 成功")
 	}
-	return
 }
 
 func IfIsExisted(arg interface{}) (bool, error) {

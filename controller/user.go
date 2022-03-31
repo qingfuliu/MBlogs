@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 	"goProject/dao"
 	"goProject/generate"
 	"goProject/logic"
@@ -15,6 +16,7 @@ import (
 func SingUpHandle(c *gin.Context) {
 	newUser := &models.UserRegister{}
 	if err := c.ShouldBindJSON(newUser); err != nil || newUser.PassWord != newUser.ConfirmPassword {
+		zap.L().Warn("some body SingUp failed:", zap.Error(err))
 		if validationError, ok := err.(validator.ValidationErrors); ok {
 			ResponseErrorWithData(c, CodeInvaildParams,
 				removeStructHeader(validationError.Translate(translator)))
