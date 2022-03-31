@@ -2,3 +2,10 @@
 2022-03-31T14:17:12+08:00	WARN	file and stdOut	server begin running
 2022-03-31T14:18:51+08:00	WARN	file and stdOut	server begin running
 2022-03-31T14:19:11+08:00	WARN	file and stdOut	some body SingUp failed:	{"error": "Key: 'UserRegister.username' Error:Field validation for 'username' failed on the 'required' tag\nKey: 'UserRegister.password' Error:Field validation for 'password' failed on the 'required' tag\nKey: 'UserRegister.re_password' Error:Field validation for 're_password' failed on the 'required' tag"}
+2022-03-31T14:24:41+08:00	WARN	file and stdOut	server begin running
+2022-03-31T14:24:51+08:00	WARN	file and stdOut	server begin running
+2022-03-31T14:25:19+08:00	WARN	file and stdOut	server begin running
+2022-03-31T14:31:45+08:00	WARN	file and stdOut	server begin running
+2022-03-31T14:31:58+08:00	WARN	file and stdOut	some body SingUp failed:	{"error": "Key: 'UserRegister.re_password' Error:Field validation for 're_password' failed on the 'eqfield' tag"}
+2022-03-31T14:32:53+08:00	WARN	file and stdOut	some body SingUp failed:	{"error": "Key: 'UserRegister.re_password' Error:Field validation for 're_password' failed on the 'eqfield' tag"}
+2022-03-31T14:33:05+08:00	WARN	file and stdOut	some body SingUp failed:	{"error": "Key: 'UserRegister.re_password' Error:Field validation for 're_password' failed on the 'eqfield' tag"}

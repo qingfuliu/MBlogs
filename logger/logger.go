@@ -13,8 +13,12 @@ var Mlogger *zap.Logger
 
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//path:=c.Request.URL
-
+		path := c.Request.URL
+		method := c.Request.Method
+		zap.L().Info("gin default logger:",
+			zap.String("path", path.String()),
+			zap.String("method", method),
+		)
 	}
 }
 

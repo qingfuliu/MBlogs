@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goProject/controller"
+	"goProject/logger"
 	"net/http"
 )
 
@@ -12,7 +13,8 @@ func SetUpRouter() *gin.Engine {
 	if err != nil {
 		fmt.Printf("register validation faild,err is %s", err)
 	}
-	r := gin.Default()
+	r := gin.New()
+	r.Use(logger.Logger(), gin.Recovery())
 	r.LoadHTMLFiles("templates/index.html")
 	r.Static("/static", "static")
 	r.GET("/", func(context *gin.Context) {
